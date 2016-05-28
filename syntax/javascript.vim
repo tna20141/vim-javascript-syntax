@@ -54,9 +54,9 @@ syntax keyword javaScriptReserved       abstract enum int short boolean export i
 "}}}
 " Comments {{{
 syntax keyword javaScriptCommentTodo      TODO FIXME XXX TBD contained
-syntax match   javaScriptLineComment      "\/\/.*" contains=@Spell,javaScriptCommentTodo
+syntax match   javaScriptLineComment      "\/\/.*" contains=@Spell,javaScriptCommentTodo extend
 syntax match   javaScriptCommentSkip      "^[ \t]*\*\($\|[ \t]\+\)"
-syntax region  javaScriptComment          start="/\*"  end="\*/" contains=@Spell,javaScriptCommentTodo
+syntax region  javaScriptComment          start="/\*"  end="\*/" contains=@Spell,javaScriptCommentTodo extend
 "}}}
 " JSDoc support {{{
 if !exists("javascript_ignore_javaScriptdoc")
@@ -65,7 +65,7 @@ if !exists("javascript_ignore_javaScriptdoc")
 	" syntax coloring for JSDoc comments (HTML)
 	"unlet b:current_syntax
 
-	syntax region javaScriptDocComment        matchgroup=javaScriptComment start="/\*\*\s*$"  end="\*/" contains=javaScriptDocTags,javaScriptCommentTodo,@javaScriptHtml,jsInJsdocExample,@Spell fold
+	syntax region javaScriptDocComment        matchgroup=javaScriptComment start="/\*\*\s*$"  end="\*/" contains=javaScriptDocTags,javaScriptCommentTodo,@javaScriptHtml,jsInJsdocExample,@Spell fold extend
 	syntax match  javaScriptDocTags           contained "@\(abstract\|access\|alias\|arg\|argument\|augments\|author\|borrows\|callback\|class\|classdesc\|const\|constant\|constructor\|constructs\|copyright\|default\|defaultvalue\|deprecated\|desc\|description\|emits\|enum\|event\|example\|exception\|exports\|extends\|external\|file\|fileoverview\|fires\|func\|function\|global\|host\|ignore\|implements\|inheritdoc\|inner\|instance\|interface\|kind\|lends\|license\|link\|linkcode\|linkplain\|listens\|member\|memberof\|method\|mixes\|mixin\|module\|name\|namespace\|override\|overview\|param\|private\|prop\|property\|cfg\|protected\|public\|readonly\|requires\|return\|returns\|see\|since\|static\|summary\|this\|throws\|todo\|tutorial\|tutorial\|type\|typedef\|var\|variation\|version\|virtual\)\>" nextgroup=javaScriptDocParam,javaScriptDocSeeTag skipwhite
 	syntax match  javaScriptDocParam          contained "\%(#\|\w\|\.\|:\|\/\)\+"
 	syntax region javaScriptDocSeeTag         contained matchgroup=javaScriptDocSeeTag start="{" end="}" contains=javaScriptDocTags
@@ -191,9 +191,11 @@ syntax region javaScriptTemplateString   start=+`+  skip=+\\\(`\|$\)+  end=+`+  
 
 function! JavaScriptFold()
 	setl foldmethod=syntax
-	setl foldlevelstart=1
 	syntax region foldBraces start=/{/ end=/}/ transparent fold keepend extend
 endfunction
+if exists("javaScript_fold")
+	call JavaScriptFold()
+endif
 
 " }}}
 " Highlight links {{{
